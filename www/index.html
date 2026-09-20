@@ -1,0 +1,3294 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>ZV Spin</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- HANDWRITTEN FONT -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            padding: 25px;
+
+            background: #000;
+
+            color: white;
+
+            font-family:
+                "Patrick Hand",
+                Arial,
+                sans-serif;
+
+            min-height: 100vh;
+
+        }
+
+
+        button,
+        input {
+
+            font-family:
+                "Patrick Hand",
+                Arial,
+                sans-serif;
+
+        }
+
+
+        button {
+
+            cursor: pointer;
+
+        }
+
+
+        /* =========================================
+           COFFEE BUTTON
+           ========================================= */
+
+
+        .coffee-button {
+
+            position: fixed;
+
+            top: 18px;
+
+            right: 20px;
+
+            width: 52px;
+
+            height: 52px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: black;
+
+            color: white;
+
+            border: 3px solid #fff000;
+
+            border-radius: 50%;
+
+            font-size: 27px;
+
+            text-decoration: none;
+
+            box-shadow:
+                0 0 8px #fff000,
+                0 0 18px #fff000;
+
+            z-index: 200;
+
+        }
+
+
+        .coffee-button:hover {
+
+            transform: scale(1.1);
+
+            background: #fff000;
+
+            color: black;
+
+        }
+
+
+        /* =========================================
+           MAIN LAYOUT
+           ========================================= */
+
+
+        .spin-page {
+
+            display: grid;
+
+            grid-template-columns:
+                1.1fr
+                1fr
+                0.8fr;
+
+            gap: 55px;
+
+            align-items: start;
+
+            max-width: 1500px;
+
+            margin: 0 auto;
+
+        }
+
+
+        /* =========================================
+           WHEEL
+           ========================================= */
+
+
+        .wheel-section {
+
+            text-align: center;
+
+        }
+
+
+        .wheel-wrapper {
+
+            position: relative;
+
+            display: inline-block;
+
+        }
+
+
+        #wheel {
+
+            width: 500px;
+
+            height: 500px;
+
+            max-width: 100%;
+
+            display: block;
+
+        }
+
+
+        /* =========================================
+           POINTER
+           ========================================= */
+
+
+        #pointer {
+
+            position: absolute;
+
+            top: -18px;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+            font-family: Arial, sans-serif;
+
+            font-size: 62px;
+
+            color: #ff176b;
+
+            text-shadow:
+
+                0 0 5px #ff176b,
+
+                0 0 12px #ff176b,
+
+                0 0 20px #ff176b;
+
+            z-index: 5;
+
+            animation:
+                pointerBlink
+                1s infinite;
+
+        }
+
+
+        @keyframes pointerBlink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.45;
+            }
+
+        }
+
+
+        /* =========================================
+           SPIN BUTTON
+           ========================================= */
+
+
+        #spinButton {
+
+            margin-top: 25px;
+
+            width: 390px;
+
+            max-width: 90%;
+
+            height: 105px;
+
+            border-radius: 60px;
+
+            border: 5px solid white;
+
+            background:
+
+                linear-gradient(
+                    90deg,
+                    #72ff00,
+                    #fff000,
+                    #ff9d00,
+                    #ff1493,
+                    #7a00ff,
+                    #0099ff,
+                    #72ff00
+                );
+
+            background-size: 300% 100%;
+
+            color: white;
+
+            font-size: 58px;
+
+            text-shadow:
+
+                3px 3px 0 black,
+
+                0 0 8px black;
+
+            box-shadow:
+
+                0 0 8px white,
+
+                0 0 20px #72ff00,
+
+                0 0 30px #7a00ff;
+
+            animation:
+                spinButtonColors
+                5s linear infinite;
+
+        }
+
+
+        @keyframes spinButtonColors {
+
+            from {
+                background-position: 0% 50%;
+            }
+
+            to {
+                background-position: 300% 50%;
+            }
+
+        }
+
+
+        #spinButton:hover {
+
+            transform: scale(1.03);
+
+        }
+
+
+        #spinButton:active {
+
+            transform: scale(0.97);
+
+        }
+
+
+        /* =========================================
+           RESULT
+           ========================================= */
+
+
+        .result-box {
+
+            margin-top: 22px;
+
+            text-align: left;
+
+            font-size: 32px;
+
+            padding-left: 25px;
+
+        }
+
+
+        #result {
+
+            display: inline-block;
+
+            min-width: 220px;
+
+            border-bottom: 4px solid white;
+
+            padding: 0 15px;
+
+        }
+
+
+        /* =========================================
+           OPTIONS
+           ========================================= */
+
+
+        .options-section {
+
+            padding-top: 35px;
+
+        }
+
+
+        .option-input {
+
+            display: flex;
+
+            width: 100%;
+
+            max-width: 500px;
+
+            height: 70px;
+
+            border: 4px solid white;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 0 8px white;
+
+        }
+
+
+        #optionInput {
+
+            flex: 1;
+
+            min-width: 0;
+
+            background: black;
+
+            color: white;
+
+            border: none;
+
+            outline: none;
+
+            padding: 12px 18px;
+
+            font-size: 30px;
+
+        }
+
+
+        #optionInput::placeholder {
+
+            color: white;
+
+            opacity: 1;
+
+        }
+
+
+        #addOption {
+
+            width: 125px;
+
+            background: black;
+
+            color: white;
+
+            border: none;
+
+            border-left: 4px solid white;
+
+            font-size: 30px;
+
+        }
+
+
+        #addOption:hover {
+
+            background: #7a00ff;
+
+        }
+
+
+        /* =========================================
+           OPTION LIST
+           ========================================= */
+
+
+        #optionList {
+
+            list-style: none;
+
+            padding: 0;
+
+            margin-top: 25px;
+
+            max-width: 500px;
+
+        }
+
+
+        #optionList li {
+
+            font-size: 32px;
+
+            padding: 5px 10px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+        .remove-option {
+
+            background: none;
+
+            border: none;
+
+            color: white;
+
+            font-size: 30px;
+
+            padding: 0;
+
+        }
+
+
+        .remove-option:hover {
+
+            color: #ff176b;
+
+            transform: scale(1.2);
+
+        }
+
+
+        /* =========================================
+           ACCOUNT
+           ========================================= */
+
+
+        .account-section {
+
+            padding-top: 30px;
+
+            text-align: center;
+
+        }
+
+
+        #userEmail {
+
+            font-size: 25px;
+
+            margin-bottom: 5px;
+
+            word-break: break-word;
+
+        }
+
+
+        /* =========================================
+           LOG OUT
+           ========================================= */
+
+
+        #logoutButton {
+
+            display: none;
+
+            background: black;
+
+            color: white;
+
+            border: 3px solid white;
+
+            border-radius: 12px;
+
+            padding: 4px 15px;
+
+            font-size: 18px;
+
+            margin-bottom: 28px;
+
+        }
+
+
+        #logoutButton:hover {
+
+            background: #ff176b;
+
+        }
+
+
+        /* =========================================
+           LOGIN / SIGN UP
+           ========================================= */
+
+
+        #loginButton,
+        #signupButton {
+
+            background: black;
+
+            color: white;
+
+            border: 3px solid white;
+
+            border-radius: 12px;
+
+            padding: 8px 18px;
+
+            font-size: 20px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        #loginButton:hover {
+
+            border-color: #72ff00;
+
+            color: #72ff00;
+
+        }
+
+
+        #signupButton:hover {
+
+            border-color: #7a00ff;
+
+            color: #7a00ff;
+
+        }
+
+
+        /* =========================================
+           SAVE / MY WHEELS
+           ========================================= */
+
+
+        #saveButton,
+        #myWheelsButton {
+
+            width: 260px;
+
+            height: 70px;
+
+            background: black;
+
+            color: white;
+
+            border-radius: 18px;
+
+            font-size: 30px;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        #saveButton {
+
+            border: 5px solid #9cff00;
+
+            box-shadow:
+                0 0 8px #9cff00;
+
+        }
+
+
+        #saveButton:hover {
+
+            background: #9cff00;
+
+            color: black;
+
+        }
+
+
+        #myWheelsButton {
+
+            border: 5px solid #8b00ff;
+
+            box-shadow:
+                0 0 8px #8b00ff;
+
+        }
+
+
+        #myWheelsButton:hover {
+
+            background: #8b00ff;
+
+        }
+
+
+        /* =========================================
+           MY WHEELS
+           ========================================= */
+
+
+        #savedWheels {
+
+            display: none;
+
+            margin-top: 5px;
+
+            text-align: left;
+
+        }
+
+
+        #savedWheels h2 {
+
+            font-size: 32px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .saved-wheel {
+
+            border: 2px solid white;
+
+            border-radius: 12px;
+
+            padding: 10px;
+
+            margin-bottom: 10px;
+
+            font-size: 22px;
+
+        }
+
+
+        .saved-wheel-name {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            word-break: break-word;
+
+        }
+
+
+        .saved-wheel button {
+
+            background: black;
+
+            color: white;
+
+            border: 2px solid white;
+
+            border-radius: 8px;
+
+            padding: 4px 10px;
+
+            font-size: 18px;
+
+            margin-right: 5px;
+
+        }
+
+
+        .saved-wheel button:hover {
+
+            background: white;
+
+            color: black;
+
+        }
+
+
+        /* =========================================
+           LOGIN / SIGN UP POPUPS
+           ========================================= */
+
+
+        #loginBox,
+        #signupBox {
+
+            display: none;
+
+            position: fixed;
+
+            top: 50%;
+
+            left: 50%;
+
+            transform:
+                translate(-50%, -50%);
+
+            width: 350px;
+
+            max-width: 90%;
+
+            background: #111;
+
+            border: 4px solid white;
+
+            border-radius: 20px;
+
+            padding: 30px;
+
+            text-align: center;
+
+            z-index: 100;
+
+            box-shadow:
+                0 0 30px #7a00ff;
+
+        }
+
+
+        #loginBox h2,
+        #signupBox h2 {
+
+            font-size: 32px;
+
+            margin-top: 0;
+
+        }
+
+
+        #loginBox input,
+        #signupBox input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            margin: 8px 0;
+
+            background: black;
+
+            color: white;
+
+            border: 2px solid white;
+
+            border-radius: 8px;
+
+            font-size: 18px;
+
+        }
+
+
+        #loginBox button,
+        #signupBox button {
+
+            background: black;
+
+            color: white;
+
+            border: 2px solid white;
+
+            border-radius: 8px;
+
+            padding: 8px 14px;
+
+            font-size: 18px;
+
+            margin: 8px 4px;
+
+        }
+
+
+        /* =========================================
+           MOBILE
+           ========================================= */
+
+
+        @media (max-width: 1000px) {
+
+            .spin-page {
+
+                grid-template-columns: 1fr;
+
+                gap: 20px;
+
+            }
+
+
+            .wheel-section {
+
+                order: 1;
+
+            }
+
+
+            .options-section {
+
+                order: 2;
+
+                padding-top: 0;
+
+            }
+
+
+            .account-section {
+
+                order: 3;
+
+                padding-top: 0;
+
+            }
+
+
+            .option-input {
+
+                margin: 0 auto;
+
+            }
+
+
+            #optionList {
+
+                margin-left: auto;
+
+                margin-right: auto;
+
+            }
+
+
+            #savedWheels {
+
+                text-align: center;
+
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            body {
+
+                padding: 12px;
+
+            }
+
+
+            #wheel {
+
+                width: 95vw;
+
+                height: 95vw;
+
+            }
+
+
+            #pointer {
+
+                font-size: 45px;
+
+                top: -12px;
+
+            }
+
+
+            #spinButton {
+
+                height: 80px;
+
+                font-size: 45px;
+
+            }
+
+
+            #optionInput {
+
+                font-size: 23px;
+
+            }
+
+
+            #addOption {
+
+                font-size: 23px;
+
+                width: 90px;
+
+            }
+
+
+            #optionList li {
+
+                font-size: 27px;
+
+            }
+
+
+            #saveButton,
+            #myWheelsButton {
+
+                width: 240px;
+
+                height: 62px;
+
+                font-size: 26px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         COFFEE
+         ========================================= -->
+
+
+    <a
+       href="https://buymeacoffee.com/kittenliveh"
+        target="_blank"
+        class="coffee-button"
+        title="Buy me a coffee"
+    >
+        ☕
+    </a>
+
+
+
+    <!-- =========================================
+         MAIN PAGE
+         ========================================= -->
+
+
+    <main class="spin-page">
+
+
+        <!-- =====================================
+             WHEEL
+             ===================================== -->
+
+
+        <section class="wheel-section">
+
+
+            <div class="wheel-wrapper">
+
+
+                <canvas
+                    id="wheel"
+                    width="500"
+                    height="500">
+                </canvas>
+
+
+                <div id="pointer">
+                    ▼
+                </div>
+
+
+            </div>
+
+
+            <br>
+
+
+            <button id="spinButton">
+                SPIN
+            </button>
+
+
+            <div class="result-box">
+
+                Result:
+
+                <span id="result"></span>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================
+             OPTIONS
+             ===================================== -->
+
+
+        <section class="options-section">
+
+
+            <div class="option-input">
+
+
+                <input
+                    type="text"
+                    id="optionInput"
+                    placeholder="Option"
+                    autocomplete="off"
+                >
+
+
+                <button id="addOption">
+                    ADD
+                </button>
+
+
+            </div>
+
+
+            <ul id="optionList"></ul>
+
+
+        </section>
+
+
+
+        <!-- =====================================
+             ACCOUNT
+             ===================================== -->
+
+
+        <section class="account-section">
+
+
+            <div
+                id="userEmail"
+                style="display: none;"
+            ></div>
+
+
+            <button
+                id="logoutButton"
+            >
+                Log out
+            </button>
+
+
+            <button id="loginButton">
+                🔐 LOG IN
+            </button>
+
+
+            <br>
+
+
+            <button id="signupButton">
+                👤 SIGN UP
+            </button>
+
+
+            <br>
+            <br>
+
+
+            <button id="saveButton">
+                💾 Save wheel
+            </button>
+
+
+            <br>
+
+
+            <button id="myWheelsButton">
+                🎲 My wheels
+            </button>
+
+
+            <div id="savedWheels">
+
+                <h2>
+                    My Wheels
+                </h2>
+
+
+                <div
+                    id="savedWheelList"
+                ></div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =========================================
+         LOGIN
+         ========================================= -->
+
+
+    <div id="loginBox">
+
+
+        <h2>
+            🔐 Log In
+        </h2>
+
+
+        <input
+            type="email"
+            id="loginEmail"
+            placeholder="Email"
+        >
+
+
+        <input
+            type="password"
+            id="loginPassword"
+            placeholder="Password"
+        >
+
+
+        <button id="loginSubmit">
+            LOG IN
+        </button>
+
+
+        <button id="closeLogin">
+            CLOSE
+        </button>
+
+
+        <p id="loginMessage"></p>
+
+
+    </div>
+
+
+
+    <!-- =========================================
+         SIGN UP
+         ========================================= -->
+
+
+    <div id="signupBox">
+
+
+        <h2>
+            👤 Create Account
+        </h2>
+
+
+        <input
+            type="email"
+            id="signupEmail"
+            placeholder="Email"
+        >
+
+
+        <input
+            type="password"
+            id="signupPassword"
+            placeholder="Password"
+        >
+
+
+        <input
+            type="password"
+            id="signupPasswordConfirm"
+            placeholder="Confirm Password"
+        >
+
+
+        <button id="signupSubmit">
+            SIGN UP
+        </button>
+
+
+        <button id="closeSignup">
+            CLOSE
+        </button>
+
+
+        <p id="signupMessage"></p>
+
+
+    </div>
+
+
+
+    <script>
+
+
+        /* =========================================
+           SUPABASE
+           ========================================= */
+
+
+        const SUPABASE_URL =
+            "https://sbjllzmjpyouwrhwjuem.supabase.co";
+
+
+        const SUPABASE_KEY =
+            "sb_publishable_yIyAh8V4lhxTWqZTXy3VYQ_Kfzvj_n1";
+
+
+        const { createClient } =
+            supabase;
+
+
+        const supabaseClient =
+            createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+
+
+        /* =========================================
+           ELEMENTS
+           ========================================= */
+
+
+        const canvas =
+            document.getElementById(
+                "wheel"
+            );
+
+
+        const ctx =
+            canvas.getContext("2d");
+
+
+        const optionInput =
+            document.getElementById(
+                "optionInput"
+            );
+
+
+        const addOption =
+            document.getElementById(
+                "addOption"
+            );
+
+
+        const optionList =
+            document.getElementById(
+                "optionList"
+            );
+
+
+        const spinButton =
+            document.getElementById(
+                "spinButton"
+            );
+
+
+        const result =
+            document.getElementById(
+                "result"
+            );
+
+
+        const loginButton =
+            document.getElementById(
+                "loginButton"
+            );
+
+
+        const signupButton =
+            document.getElementById(
+                "signupButton"
+            );
+
+
+        const logoutButton =
+            document.getElementById(
+                "logoutButton"
+            );
+
+
+        const userEmail =
+            document.getElementById(
+                "userEmail"
+            );
+
+
+        const saveButton =
+            document.getElementById(
+                "saveButton"
+            );
+
+
+        const myWheelsButton =
+            document.getElementById(
+                "myWheelsButton"
+            );
+
+
+        const savedWheels =
+            document.getElementById(
+                "savedWheels"
+            );
+
+
+        const savedWheelList =
+            document.getElementById(
+                "savedWheelList"
+            );
+
+
+        const loginBox =
+            document.getElementById(
+                "loginBox"
+            );
+
+
+        const signupBox =
+            document.getElementById(
+                "signupBox"
+            );
+
+
+        const closeLogin =
+            document.getElementById(
+                "closeLogin"
+            );
+
+
+        const closeSignup =
+            document.getElementById(
+                "closeSignup"
+            );
+
+
+        const loginSubmit =
+            document.getElementById(
+                "loginSubmit"
+            );
+
+
+        const signupSubmit =
+            document.getElementById(
+                "signupSubmit"
+            );
+
+
+        const loginEmail =
+            document.getElementById(
+                "loginEmail"
+            );
+
+
+        const loginPassword =
+            document.getElementById(
+                "loginPassword"
+            );
+
+
+        const signupEmail =
+            document.getElementById(
+                "signupEmail"
+            );
+
+
+        const signupPassword =
+            document.getElementById(
+                "signupPassword"
+            );
+
+
+        const signupPasswordConfirm =
+            document.getElementById(
+                "signupPasswordConfirm"
+            );
+
+
+        const loginMessage =
+            document.getElementById(
+                "loginMessage"
+            );
+
+
+        const signupMessage =
+            document.getElementById(
+                "signupMessage"
+            );
+
+
+
+        /* =========================================
+           VARIABLES
+           ========================================= */
+
+
+        let options = [];
+
+
+        let rotation = 0;
+
+
+        let spinning = false;
+
+
+
+        /* =========================================
+           DRAW WHEEL
+           ========================================= */
+
+
+        function drawWheel() {
+
+
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            const centerX = 250;
+
+            const centerY = 250;
+
+            const radius = 195;
+
+
+            const colors = [
+
+                "#ff1744",
+
+                "#ff8c00",
+
+                "#fff000",
+
+                "#55ff00",
+
+                "#00aaff",
+
+                "#3f00ff",
+
+                "#a000ff"
+
+            ];
+
+
+            /* =====================================
+               ROTATING WHEEL
+               ===================================== */
+
+
+            ctx.save();
+
+
+            ctx.translate(
+                centerX,
+                centerY
+            );
+
+
+            ctx.rotate(
+                rotation
+            );
+
+
+            ctx.translate(
+                -centerX,
+                -centerY
+            );
+
+
+            /* =====================================
+               WHEEL SLICES
+               ===================================== */
+
+
+            if (
+                options.length > 0
+            ) {
+
+
+                const sliceAngle =
+                    (
+                        Math.PI * 2
+                    ) /
+                    options.length;
+
+
+                for (
+                    let i = 0;
+                    i < options.length;
+                    i++
+                ) {
+
+
+                    const startAngle =
+                        i *
+                        sliceAngle;
+
+
+                    const endAngle =
+                        startAngle +
+                        sliceAngle;
+
+
+                    ctx.beginPath();
+
+
+                    ctx.moveTo(
+                        centerX,
+                        centerY
+                    );
+
+
+                    ctx.arc(
+                        centerX,
+                        centerY,
+                        radius,
+                        startAngle,
+                        endAngle
+                    );
+
+
+                    ctx.closePath();
+
+
+                    ctx.fillStyle =
+                        colors[
+                            i %
+                            colors.length
+                        ];
+
+
+                    ctx.fill();
+
+
+                    ctx.lineWidth =
+                        4;
+
+
+                    ctx.strokeStyle =
+                        "#111";
+
+
+                    ctx.stroke();
+
+
+                    /* TEXT */
+
+
+                    ctx.save();
+
+
+                    ctx.translate(
+                        centerX,
+                        centerY
+                    );
+
+
+                    ctx.rotate(
+                        startAngle +
+                        sliceAngle / 2
+                    );
+
+
+                    ctx.textAlign =
+                        "right";
+
+
+                    ctx.textBaseline =
+                        "middle";
+
+
+                    ctx.fillStyle =
+                        "black";
+
+
+                    let fontSize =
+                        25;
+
+
+                    if (
+                        options.length > 8
+                    ) {
+
+                        fontSize =
+                            18;
+
+                    }
+
+
+                    if (
+                        options.length > 12
+                    ) {
+
+                        fontSize =
+                            14;
+
+                    }
+
+
+                    ctx.font =
+                        fontSize +
+                        "px 'Patrick Hand'";
+
+
+                    ctx.fillText(
+                        options[i],
+                        radius - 18,
+                        0
+                    );
+
+
+                    ctx.restore();
+
+                }
+
+
+            } else {
+
+
+                /* EMPTY WHEEL */
+
+
+                ctx.beginPath();
+
+
+                ctx.arc(
+                    centerX,
+                    centerY,
+                    radius,
+                    0,
+                    Math.PI * 2
+                );
+
+
+                ctx.fillStyle =
+                    "#222";
+
+
+                ctx.fill();
+
+
+                ctx.lineWidth =
+                    5;
+
+
+                ctx.strokeStyle =
+                    "white";
+
+
+                ctx.stroke();
+
+
+                ctx.fillStyle =
+                    "white";
+
+
+                ctx.font =
+                    "30px 'Patrick Hand'";
+
+
+                ctx.textAlign =
+                    "center";
+
+
+                ctx.textBaseline =
+                    "middle";
+
+
+                ctx.fillText(
+                    "ADD OPTIONS",
+                    centerX,
+                    centerY
+                );
+
+            }
+
+
+
+            /* =====================================
+               RED + BLUE WIRES
+               ===================================== */
+
+
+            drawWire(
+                "#ff1744",
+                0
+            );
+
+
+            drawWire(
+                "#1479ff",
+                Math.PI
+            );
+
+
+            drawWire(
+                "#ff1744",
+                Math.PI
+            );
+
+
+            drawWire(
+                "#1479ff",
+                0
+            );
+
+
+
+            /* =====================================
+               CENTER STAR
+               ===================================== */
+
+
+            ctx.save();
+
+
+            ctx.beginPath();
+
+
+            const starOuter =
+                24;
+
+
+            const starInner =
+                10;
+
+
+            for (
+                let i = 0;
+                i < 10;
+                i++
+            ) {
+
+
+                const angle =
+                    -Math.PI / 2 +
+                    i * Math.PI / 5;
+
+
+                const starRadius =
+                    i % 2 === 0
+                        ? starOuter
+                        : starInner;
+
+
+                const x =
+                    centerX +
+                    Math.cos(angle) *
+                    starRadius;
+
+
+                const y =
+                    centerY +
+                    Math.sin(angle) *
+                    starRadius;
+
+
+                if (
+                    i === 0
+                ) {
+
+                    ctx.moveTo(
+                        x,
+                        y
+                    );
+
+                } else {
+
+                    ctx.lineTo(
+                        x,
+                        y
+                    );
+
+                }
+
+            }
+
+
+            ctx.closePath();
+
+
+            ctx.fillStyle =
+                "#111";
+
+
+            ctx.fill();
+
+
+            ctx.lineWidth =
+                4;
+
+
+            ctx.strokeStyle =
+                "white";
+
+
+            ctx.stroke();
+
+
+            ctx.restore();
+
+
+            ctx.restore();
+
+
+            /* =====================================
+               EXTRA OUTER GLOW
+               ===================================== */
+
+
+            ctx.save();
+
+
+            ctx.lineWidth =
+                3;
+
+
+            ctx.strokeStyle =
+                "#9cff00";
+
+
+            ctx.shadowBlur =
+                12;
+
+
+            ctx.shadowColor =
+                "#9cff00";
+
+
+            ctx.beginPath();
+
+
+            ctx.arc(
+                centerX,
+                centerY,
+                radius + 15,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.stroke();
+
+
+            ctx.restore();
+
+
+        }
+
+
+
+        /* =========================================
+           DRAW WIRE
+           ========================================= */
+
+
+        function drawWire(
+            color,
+            phase
+        ) {
+
+
+            const centerX =
+                250;
+
+
+            const centerY =
+                250;
+
+
+            const wireRadius =
+                208;
+
+
+            ctx.save();
+
+
+            ctx.beginPath();
+
+
+            ctx.lineWidth =
+                7;
+
+
+            ctx.strokeStyle =
+                color;
+
+
+            ctx.lineCap =
+                "round";
+
+
+            ctx.lineJoin =
+                "round";
+
+
+            ctx.shadowBlur =
+                12;
+
+
+            ctx.shadowColor =
+                color;
+
+
+            const steps =
+                180;
+
+
+            for (
+                let i = 0;
+                i <= steps;
+                i++
+            ) {
+
+
+                const angle =
+                    (
+                        i /
+                        steps
+                    ) *
+                    Math.PI *
+                    2;
+
+
+                /*
+                 * Wavy radius creates
+                 * the weaving effect.
+                 */
+
+
+                const wave =
+                    Math.sin(
+                        angle * 7 +
+                        phase
+                    ) *
+                    8;
+
+
+                const wave2 =
+                    Math.sin(
+                        angle * 13 +
+                        phase
+                    ) *
+                    3;
+
+
+                const r =
+                    wireRadius +
+                    wave +
+                    wave2;
+
+
+                const x =
+                    centerX +
+                    Math.cos(angle) *
+                    r;
+
+
+                const y =
+                    centerY +
+                    Math.sin(angle) *
+                    r;
+
+
+                if (
+                    i === 0
+                ) {
+
+                    ctx.moveTo(
+                        x,
+                        y
+                    );
+
+                } else {
+
+                    ctx.lineTo(
+                        x,
+                        y
+                    );
+
+                }
+
+            }
+
+
+            ctx.stroke();
+
+
+            ctx.restore();
+
+        }
+
+
+
+        /* =========================================
+           ADD OPTION
+           ========================================= */
+
+
+        function addNewOption() {
+
+
+            const value =
+                optionInput.value.trim();
+
+
+            if (
+                value === ""
+            ) {
+
+                return;
+
+            }
+
+
+            options.push(
+                value
+            );
+
+
+            optionInput.value =
+                "";
+
+
+            updateOptionList();
+
+
+            drawWheel();
+
+
+            optionInput.focus();
+
+        }
+
+
+        addOption.addEventListener(
+            "click",
+            addNewOption
+        );
+
+
+        optionInput.addEventListener(
+            "keydown",
+            function(event) {
+
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+
+                    event.preventDefault();
+
+
+                    addNewOption();
+
+                }
+
+            }
+        );
+
+
+
+        /* =========================================
+           OPTION LIST
+           ========================================= */
+
+
+        function updateOptionList() {
+
+
+            optionList.innerHTML =
+                "";
+
+
+            options.forEach(
+                function(
+                    option,
+                    index
+                ) {
+
+
+                    const li =
+                        document.createElement(
+                            "li"
+                        );
+
+
+                    const text =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    text.textContent =
+                        option;
+
+
+                    const removeButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    removeButton.textContent =
+                        "×";
+
+
+                    removeButton.className =
+                        "remove-option";
+
+
+                    removeButton.addEventListener(
+                        "click",
+                        function() {
+
+
+                            options.splice(
+                                index,
+                                1
+                            );
+
+
+                            updateOptionList();
+
+
+                            drawWheel();
+
+                        }
+                    );
+
+
+                    li.appendChild(
+                        text
+                    );
+
+
+                    li.appendChild(
+                        removeButton
+                    );
+
+
+                    optionList.appendChild(
+                        li
+                    );
+
+                }
+            );
+
+        }
+
+
+
+        /* =========================================
+           SPIN
+           ========================================= */
+
+
+        spinButton.addEventListener(
+            "click",
+            function() {
+
+
+                if (
+                    spinning
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    options.length === 0
+                ) {
+
+
+                    result.textContent =
+                        "Add options!";
+
+
+                    return;
+
+                }
+
+
+                spinning =
+                    true;
+
+
+                result.textContent =
+                    "";
+
+
+                const extraSpins =
+                    5 +
+                    Math.random() *
+                    5;
+
+
+                const targetRotation =
+                    rotation +
+                    extraSpins *
+                    Math.PI *
+                    2;
+
+
+                const startRotation =
+                    rotation;
+
+
+                const duration =
+                    3000;
+
+
+                const startTime =
+                    performance.now();
+
+
+                function animate(
+                    time
+                ) {
+
+
+                    const elapsed =
+                        time -
+                        startTime;
+
+
+                    const progress =
+                        Math.min(
+                            elapsed /
+                            duration,
+                            1
+                        );
+
+
+                    const eased =
+                        1 -
+                        Math.pow(
+                            1 - progress,
+                            3
+                        );
+
+
+                    rotation =
+                        startRotation +
+                        (
+                            targetRotation -
+                            startRotation
+                        ) *
+                        eased;
+
+
+                    drawWheel();
+
+
+                    if (
+                        progress < 1
+                    ) {
+
+
+                        requestAnimationFrame(
+                            animate
+                        );
+
+
+                    } else {
+
+
+                        rotation =
+                            targetRotation %
+                            (
+                                Math.PI * 2
+                            );
+
+
+                        spinning =
+                            false;
+
+
+                        const pointerAngle =
+                            (
+                                Math.PI * 1.5 -
+                                rotation +
+                                Math.PI * 2
+                            ) %
+                            (
+                                Math.PI * 2
+                            );
+
+
+                        const sliceAngle =
+                            (
+                                Math.PI * 2
+                            ) /
+                            options.length;
+
+
+                        const selectedIndex =
+                            Math.floor(
+                                pointerAngle /
+                                sliceAngle
+                            );
+
+
+                        result.textContent =
+                            options[
+                                selectedIndex
+                            ];
+
+                    }
+
+                }
+
+
+                requestAnimationFrame(
+                    animate
+                );
+
+            }
+        );
+
+
+
+        /* =========================================
+           LOGIN
+           ========================================= */
+
+
+        loginButton.addEventListener(
+            "click",
+            function() {
+
+
+                loginBox.style.display =
+                    "block";
+
+
+                signupBox.style.display =
+                    "none";
+
+            }
+        );
+
+
+        closeLogin.addEventListener(
+            "click",
+            function() {
+
+
+                loginBox.style.display =
+                    "none";
+
+            }
+        );
+
+
+
+        /* =========================================
+           SIGN UP WINDOW
+           ========================================= */
+
+
+        signupButton.addEventListener(
+            "click",
+            function() {
+
+
+                signupBox.style.display =
+                    "block";
+
+
+                loginBox.style.display =
+                    "none";
+
+            }
+        );
+
+
+        closeSignup.addEventListener(
+            "click",
+            function() {
+
+
+                signupBox.style.display =
+                    "none";
+
+            }
+        );
+
+
+
+        /* =========================================
+           SIGN UP
+           ========================================= */
+
+
+        signupSubmit.addEventListener(
+            "click",
+            async function() {
+
+
+                signupMessage.textContent =
+                    "";
+
+
+                const email =
+                    signupEmail.value.trim();
+
+
+                const password =
+                    signupPassword.value;
+
+
+                const confirmPassword =
+                    signupPasswordConfirm.value;
+
+
+                if (
+                    email === ""
+                ) {
+
+
+                    signupMessage.textContent =
+                        "Please enter your email.";
+
+
+                    return;
+
+                }
+
+
+                if (
+                    password === ""
+                ) {
+
+
+                    signupMessage.textContent =
+                        "Please enter a password.";
+
+
+                    return;
+
+                }
+
+
+                if (
+                    password !==
+                    confirmPassword
+                ) {
+
+
+                    signupMessage.textContent =
+                        "Passwords don't match!";
+
+
+                    return;
+
+                }
+
+
+                signupMessage.textContent =
+                    "Creating account...";
+
+
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .auth
+                        .signUp({
+
+                            email:
+                                email,
+
+                            password:
+                                password
+
+                        });
+
+
+                if (
+                    error
+                ) {
+
+
+                    signupMessage.textContent =
+                        error.message;
+
+
+                    return;
+
+                }
+
+
+                signupMessage.textContent =
+                    "✅ Account created! Check your email.";
+
+            }
+        );
+
+
+
+        /* =========================================
+           LOGIN
+           ========================================= */
+
+
+        loginSubmit.addEventListener(
+            "click",
+            async function() {
+
+
+                loginMessage.textContent =
+                    "";
+
+
+                const email =
+                    loginEmail.value.trim();
+
+
+                const password =
+                    loginPassword.value;
+
+
+                if (
+                    email === ""
+                ) {
+
+
+                    loginMessage.textContent =
+                        "Please enter your email.";
+
+
+                    return;
+
+                }
+
+
+                if (
+                    password === ""
+                ) {
+
+
+                    loginMessage.textContent =
+                        "Please enter your password.";
+
+
+                    return;
+
+                }
+
+
+                loginMessage.textContent =
+                    "Logging in...";
+
+
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .auth
+                        .signInWithPassword({
+
+                            email:
+                                email,
+
+                            password:
+                                password
+
+                        });
+
+
+                if (
+                    error
+                ) {
+
+
+                    loginMessage.textContent =
+                        error.message;
+
+
+                    return;
+
+                }
+
+
+                loginBox.style.display =
+                    "none";
+
+
+                result.textContent =
+                    "🔐 Logged in!";
+
+            }
+        );
+
+
+
+        /* =========================================
+           LOG OUT
+           ========================================= */
+
+
+        logoutButton.addEventListener(
+            "click",
+            async function() {
+
+
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .auth
+                        .signOut();
+
+
+                if (
+                    error
+                ) {
+
+
+                    console.error(
+                        error
+                    );
+
+
+                    result.textContent =
+                        "❌ Couldn't log out.";
+
+
+                    return;
+
+                }
+
+
+                savedWheels.style.display =
+                    "none";
+
+
+                result.textContent =
+                    "👋 Logged out!";
+
+            }
+        );
+
+
+
+        /* =========================================
+           ACCOUNT UI
+           ========================================= */
+
+
+        function updateAccountUI(
+            session
+        ) {
+
+
+            if (
+                session
+            ) {
+
+
+                loginButton.style.display =
+                    "none";
+
+
+                signupButton.style.display =
+                    "none";
+
+
+                logoutButton.style.display =
+                    "inline-block";
+
+
+                userEmail.style.display =
+                    "block";
+
+
+                userEmail.innerHTML =
+                    '<span>✉</span> ' +
+                    session.user.email;
+
+
+            } else {
+
+
+                loginButton.style.display =
+                    "inline-block";
+
+
+                signupButton.style.display =
+                    "inline-block";
+
+
+                logoutButton.style.display =
+                    "none";
+
+
+                userEmail.style.display =
+                    "none";
+
+
+                userEmail.textContent =
+                    "";
+
+            }
+
+        }
+
+
+
+        /* =========================================
+           CHECK LOGIN
+           ========================================= */
+
+
+        async function checkLogin() {
+
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .auth
+                    .getSession();
+
+
+            if (
+                error
+            ) {
+
+
+                console.error(
+                    "Session error:",
+                    error
+                );
+
+
+                return;
+
+            }
+
+
+            updateAccountUI(
+                data.session
+            );
+
+        }
+
+
+
+        /* =========================================
+           WATCH LOGIN
+           ========================================= */
+
+
+        supabaseClient
+            .auth
+            .onAuthStateChange(
+                function(
+                    event,
+                    session
+                ) {
+
+
+                    updateAccountUI(
+                        session
+                    );
+
+                }
+            );
+
+
+
+        /* =========================================
+           SAVE WHEEL
+           ========================================= */
+
+
+        saveButton.addEventListener(
+            "click",
+            async function() {
+
+
+                const {
+                    data
+                } =
+                    await supabaseClient
+                        .auth
+                        .getSession();
+
+
+                if (
+                    !data.session
+                ) {
+
+
+                    result.textContent =
+                        "🔐 Log in to save a wheel.";
+
+
+                    return;
+
+                }
+
+
+                if (
+                    options.length === 0
+                ) {
+
+
+                    result.textContent =
+                        "Add options first!";
+
+
+                    return;
+
+                }
+
+
+                const wheelName =
+                    prompt(
+                        "What do you want to call this wheel?"
+                    );
+
+
+                if (
+                    wheelName === null
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    wheelName.trim() === ""
+                ) {
+
+
+                    result.textContent =
+                        "Your wheel needs a name!";
+
+
+                    return;
+
+                }
+
+
+                result.textContent =
+                    "💾 Saving...";
+
+
+                const user =
+                    data.session.user;
+
+
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .from("wheels")
+                        .insert([
+
+                            {
+
+                                name:
+                                    wheelName.trim(),
+
+                                options:
+                                    options,
+
+                                user_id:
+                                    user.id
+
+                            }
+
+                        ]);
+
+
+                if (
+                    error
+                ) {
+
+
+                    console.error(
+                        "Save error:",
+                        error
+                    );
+
+
+                    result.textContent =
+                        "❌ " +
+                        error.message;
+
+
+                    return;
+
+                }
+
+
+                result.textContent =
+                    "💾 " +
+                    wheelName.trim() +
+                    " saved!";
+
+            }
+        );
+
+
+
+        /* =========================================
+           MY WHEELS
+           ========================================= */
+
+
+        myWheelsButton.addEventListener(
+            "click",
+            async function() {
+
+
+                const {
+                    data
+                } =
+                    await supabaseClient
+                        .auth
+                        .getSession();
+
+
+                if (
+                    !data.session
+                ) {
+
+
+                    result.textContent =
+                        "🔐 Log in to see your wheels.";
+
+
+                    return;
+
+                }
+
+
+                await displaySavedWheels();
+
+            }
+        );
+
+
+
+        /* =========================================
+           DISPLAY SAVED WHEELS
+           ========================================= */
+
+
+        async function displaySavedWheels() {
+
+
+            const {
+                data: sessionData
+            } =
+                await supabaseClient
+                    .auth
+                    .getSession();
+
+
+            if (
+                !sessionData.session
+            ) {
+
+                return;
+
+            }
+
+
+            savedWheels.style.display =
+                "block";
+
+
+            savedWheelList.innerHTML =
+                "Loading...";
+
+
+            const {
+                data: wheels,
+                error
+            } =
+                await supabaseClient
+                    .from("wheels")
+                    .select("*")
+                    .order(
+                        "created_at",
+                        {
+                            ascending:
+                                false
+                        }
+                    );
+
+
+            if (
+                error
+            ) {
+
+
+                console.error(
+                    "Load wheels error:",
+                    error
+                );
+
+
+                savedWheelList.textContent =
+                    "❌ " +
+                    error.message;
+
+
+                return;
+
+            }
+
+
+            savedWheelList.innerHTML =
+                "";
+
+
+            if (
+                !wheels ||
+                wheels.length === 0
+            ) {
+
+
+                savedWheelList.textContent =
+                    "No saved wheels yet.";
+
+
+                return;
+
+            }
+
+
+            wheels.forEach(
+                function(wheel) {
+
+
+                    const container =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    container.className =
+                        "saved-wheel";
+
+
+                    const name =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    name.className =
+                        "saved-wheel-name";
+
+
+                    name.textContent =
+                        "🎡 " +
+                        wheel.name;
+
+
+                    const loadButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    loadButton.textContent =
+                        "Load";
+
+
+                    loadButton.addEventListener(
+                        "click",
+                        function() {
+
+
+                            options =
+                                Array.isArray(
+                                    wheel.options
+                                )
+                                    ? wheel.options
+                                    : [];
+
+
+                            rotation =
+                                0;
+
+
+                            updateOptionList();
+
+
+                            drawWheel();
+
+
+                            result.textContent =
+                                "📂 " +
+                                wheel.name +
+                                " loaded!";
+
+                        }
+                    );
+
+
+                    const deleteButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    deleteButton.textContent =
+                        "Delete";
+
+
+                    deleteButton.addEventListener(
+                        "click",
+                        async function() {
+
+
+                            const confirmed =
+                                confirm(
+                                    'Delete "' +
+                                    wheel.name +
+                                    '"?'
+                                );
+
+
+                            if (
+                                !confirmed
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            const {
+                                error
+                            } =
+                                await supabaseClient
+                                    .from("wheels")
+                                    .delete()
+                                    .eq(
+                                        "id",
+                                        wheel.id
+                                    );
+
+
+                            if (
+                                error
+                            ) {
+
+
+                                console.error(
+                                    error
+                                );
+
+
+                                result.textContent =
+                                    "❌ " +
+                                    error.message;
+
+
+                                return;
+
+                            }
+
+
+                            result.textContent =
+                                "🗑️ " +
+                                wheel.name +
+                                " deleted!";
+
+
+                            await displaySavedWheels();
+
+                        }
+                    );
+
+
+                    container.appendChild(
+                        name
+                    );
+
+
+                    container.appendChild(
+                        loadButton
+                    );
+
+
+                    container.appendChild(
+                        deleteButton
+                    );
+
+
+                    savedWheelList.appendChild(
+                        container
+                    );
+
+                }
+            );
+
+        }
+
+
+
+        /* =========================================
+           START APP
+           ========================================= */
+
+
+        checkLogin();
+
+
+        drawWheel();
+
+
+    </script>
+
+
+</body>
+
+</html>
